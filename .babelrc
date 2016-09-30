@@ -1,0 +1,9 @@
+{
+  "presets": ["es2015", "stage-1", "react"],
+  "env": {
+    "development": {
+      "presets": ["react-hmre"]
+    }
+  },
+  "plugins": ["transform-object-assign", "add-module-exports", "array-includes"]
+}
