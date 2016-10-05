@@ -1,6 +1,8 @@
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
-let socket;
+let socket,
+    requestCallbacks = {},
+    requestCounter = 0;
 
 export let handlers = {};
 
@@ -23,7 +25,15 @@ export function connect(url) {
     socket.on("reconnect", () => {
         console.info("Re-registering handlers with server");
         for(var key in handlers){
-            socket.emit('add-handler', key);
+            socket.emit("add-handler", key);
+        }
+    });
+
+    socket.on("response", (message, type, headers) => {
+        var callback = requestCallbacks[headers["ClientId"]];
+        if (callback){
+            callback(message, type, headers);
+            delete requestCallbacks[headers["ClientId"]];
         }
     });
 }
@@ -38,7 +48,7 @@ export function addHandler(type, callback) {
     handlers[type].push(callback);
 
     // Tells the server we are interested in the type.
-    socket.emit('add-handler', type);
+    socket.emit("add-handler", type);
 }
 
 /**
@@ -54,7 +64,7 @@ export function removeHandler(type, callback) {
 
     // Unbinds handler from client on server
     if (handlers[type].length === 0){
-        socket.emit('remove-handler', type);
+        socket.emit("remove-handler", type);
     }
 }
 
@@ -63,7 +73,7 @@ export function removeHandler(type, callback) {
  * @param  {object} context
  */
 export function setContext(context) {
-    socket.emit('set-context', context);
+    socket.emit("set-context", context);
 }
 
 /**
@@ -74,7 +84,23 @@ export function setContext(context) {
  * @param  {Object|undefined} headers
  */
 export function send(endpoint, type, message, headers = {}){
-    socket.emit('send-command', endpoint, type, message, headers);
+    socket.emit("send-command", endpoint, type, message, headers);
+}
+
+/**
+ * Sends a command to the specified endpoint(s) and waits for one or more replies.
+ * The method behaves like a regular blocking RPC method.
+ * @param {string|Array} endpoint
+ * @param {string} type
+ * @param {Object} message
+ * @param {function} callback
+ * @param {Object|undefined} headers
+ */
+export function sendRequest(endpoint, type, message, callback, headers = {}){
+    requestCallbacks[requestCounter] = callback;
+    headers["ClientId"] = requestCounter;
+    requestCounter++;
+    socket.emit("send-request", endpoint, type, message, headers);
 }
 
 /**
@@ -84,5 +110,5 @@ export function send(endpoint, type, message, headers = {}){
  * @param  {Object|undefined} headers
  */
 export function publish(type, message, headers = {}){
-    socket.emit('publish-event', type, message, headers);
+    socket.emit("publish-event", type, message, headers);
 }

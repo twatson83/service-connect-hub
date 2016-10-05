@@ -4,7 +4,7 @@ var webpackHotMiddleware = require('webpack-hot-middleware');
 var express = require("express");
 var http = require("http");
 var config = require('./webpack.config');
-var ServiceConnectHub = require('../../lib/server').ServiceConnectHub;
+var ServiceConnectHub = require('../../../lib/server').ServiceConnectHub;
 
 var app = express(), server = http.createServer(app);
 

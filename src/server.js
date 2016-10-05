@@ -1,6 +1,6 @@
-import io from 'socket.io';
-var Bus = require('service-connect');
-import EventEmitter from 'events';
+import io from "socket.io";
+var Bus = require("service-connect");
+import EventEmitter from "events";
 
 /** Class representing a the server implementation of ServiceConnectHub. */
 export class ServiceConnectHub extends EventEmitter {
@@ -35,7 +35,7 @@ export class ServiceConnectHub extends EventEmitter {
 
         this.bus.init(() =>{
             this.socketServer = io(server);
-            this.socketServer.on('connection', this._connected);
+            this.socketServer.on("connection", this._connected);
             this.socketServer.on("error", ex => this.emit("error", ex));
 
             if (callback){
@@ -63,15 +63,15 @@ export class ServiceConnectHub extends EventEmitter {
     _connected(socket){
         this.connections[socket.id] = { socket, handlers: [] };
 
-        socket.on('set-context', context => {
+        socket.on("set-context", context => {
             this.connections[socket.id].context = context;
         });
 
-        socket.on('error', ex => {
+        socket.on("error", ex => {
             this.emit("error", ex);
         });
 
-        socket.on('add-handler', handler => {
+        socket.on("add-handler", handler => {
             if(!this._isValidMessageType(handler))
                 return;
 
@@ -82,26 +82,35 @@ export class ServiceConnectHub extends EventEmitter {
             }
         });
 
-        socket.on('remove-handler', handler => {
+        socket.on("remove-handler", handler => {
             this.connections[socket.id].handlers = this.connections[socket.id].handlers.filter(h => h !== handler);
             this._removeTypeMapping(handler);
         });
 
-        socket.on('send-command', (endpoint, type, message, headers) => {
+        socket.on("send-command", (endpoint, type, message, headers) => {
             if(!this._isValidMessageType(type))
                 return;
 
             this.bus.send(endpoint, type, message, headers);
         });
 
-        socket.on('publish-event', (type, message, headers) => {
+        socket.on("publish-event", (type, message, headers) => {
             if(!this._isValidMessageType(type))
                 return;
 
             this.bus.publish(type, message, headers);
         });
 
-        socket.on('disconnect', () => {
+        socket.on("send-request", (endpoint, type, message, headers) => {
+            if(!this._isValidMessageType(type))
+                return;
+
+            this.bus.sendRequest(endpoint, type, message, message => {
+                socket.emit("response", message, type, headers);
+            }, headers);
+        });
+
+        socket.on("disconnect", () => {
             if(this.connections[socket.id] !== undefined){
                 for (var key in this.connections[socket.id]){
                     this._removeTypeMapping(key);
@@ -168,7 +177,7 @@ export class ServiceConnectHub extends EventEmitter {
             if(this.connections[key].handlers.includes(type)){
                 let shouldProcess = filters.every(f => f(message, headers, type, this.connections[key].context));
                 if (shouldProcess){
-                    this.connections[key].socket.emit("handler-message", message, type);
+                    this.connections[key].socket.emit("handler-message", message, type, headers);
                 }
             }
         }

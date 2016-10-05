@@ -1,7 +1,7 @@
 {
   "name": "ServiceConnectHub",
   "version": "1.0.0",
-  "description": "Web framework that allows the client side to listen to RabbitMQ messages.",
+  "description": "Web framework that allows the client side to listen to and publish RabbitMQ messages.",
   "main": "index.js",
   "scripts": {
     "build": "babel -d ./lib ./src -s",
@@ -19,9 +19,13 @@
     "examples.es6.server": "babel-node examples/es6/server.js",
     "examples.es6.service": "babel-node examples/es6/service.js",
     "examples.react.server": "node examples/react/server.js",
-    "examples.react.service": "node examples/react/service.js"
+    "examples.react.service": "node examples/react/service.js",
+    "examples.redux.server": "nodemon examples/redux/server/server.js --watch examples/redux/server/ --exec babel-node",
+    "examples.redux.service": "babel-node examples/redux/service/service.js"
   },
   "author": "Tim Watson",
+  "email": "tswatson123@gmail.com",
+  "url": "https://github.com/twatson83",
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.11.4",
@@ -39,8 +43,15 @@
     "chance": "^1.0.4",
     "mocha": "^3.0.2",
     "nodemon": "^1.10.2",
+    "object-assign": "^4.1.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.8.1",
+    "react-router-redux": "^4.0.6",
+    "redux": "^3.6.0",
+    "redux-immutable-state-invariant": "^1.2.4",
+    "redux-thunk": "^2.1.0",
     "sinon": "^1.17.5",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1",
@@ -49,8 +60,27 @@
   "dependencies": {
     "amqplib": "^0.4.2",
     "express": "^4.14.0",
-    "service-connect": "0.0.9",
+    "service-connect": "0.0.10",
     "socket.io": "^1.4.8",
     "socket.io-client": "^1.4.8"
-  }
+  },
+  "keywords": [
+    "service",
+    "bus",
+    "message",
+    "messaging",
+    "rabbitmq",
+    "event",
+    "publish",
+    "subscribe",
+    "listen",
+    "dispatch",
+    "web",
+    "server",
+    "framework",
+    "hub",
+    "service connect",
+    "service-connect",
+    "connect"
+  ]
 }
