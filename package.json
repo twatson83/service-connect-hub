@@ -1,6 +1,6 @@
 {
-  "name": "ServiceConnectHub",
-  "version": "1.0.0",
+  "name": "service-connect-hub",
+  "version": "1.0.3",
   "description": "Web framework that allows the client side to listen to and publish RabbitMQ messages.",
   "main": "index.js",
   "scripts": {
@@ -41,6 +41,7 @@
     "babel-preset-stage-1": "^6.13.0",
     "chai": "^3.5.0",
     "chance": "^1.0.4",
+    "eslint": "^3.7.1",
     "mocha": "^3.0.2",
     "nodemon": "^1.10.2",
     "object-assign": "^4.1.0",
@@ -60,7 +61,7 @@
   "dependencies": {
     "amqplib": "^0.4.2",
     "express": "^4.14.0",
-    "service-connect": "0.0.10",
+    "service-connect": "0.0.17",
     "socket.io": "^1.4.8",
     "socket.io-client": "^1.4.8"
   },

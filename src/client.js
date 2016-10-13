@@ -69,6 +69,18 @@ export function removeHandler(type, callback) {
 }
 
 /**
+ * Removes all handler bindings
+ */
+export function clearHandlers() {
+
+    Object.keys(handlers).forEach(t => {
+        socket.emit("remove-handler", t);
+    });
+
+    handlers = {};
+}
+
+/**
  * Sets the context on the server.  Server can use the context to filter messages.
  * @param  {object} context
  */
