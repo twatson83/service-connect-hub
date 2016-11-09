@@ -11,7 +11,12 @@ export let handlers = {};
  * @param  {string} url
  */
 export function connect(url) {
-    socket = io.connect(url);
+
+    if(url){
+        socket = io(url);
+    } else {
+        socket = io();
+    }
 
     // Received from the server when a message has been consumed.  Executed all the callbacks that are interested in
     // message type.
@@ -35,6 +40,15 @@ export function connect(url) {
             callback(message, type, headers);
             delete requestCallbacks[headers["ClientId"]];
         }
+    });
+
+    return new Promise((resolve, reject) => {
+        socket.on('connect', () => {
+            resolve();
+        });
+        socket.on('connect_error', (ex) => {
+            reject(ex);
+        });
     });
 }
 
@@ -75,9 +89,8 @@ export function clearHandlers() {
 
     Object.keys(handlers).forEach(t => {
         socket.emit("remove-handler", t);
+        delete handlers[t];
     });
-
-    handlers = {};
 }
 
 /**

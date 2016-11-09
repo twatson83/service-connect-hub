@@ -1,6 +1,6 @@
 {
   "name": "service-connect-hub",
-  "version": "1.0.3",
+  "version": "1.0.8",
   "description": "Web framework that allows the client side to listen to and publish RabbitMQ messages.",
   "main": "index.js",
   "scripts": {
@@ -61,7 +61,7 @@
   "dependencies": {
     "amqplib": "^0.4.2",
     "express": "^4.14.0",
-    "service-connect": "0.0.17",
+    "service-connect": "0.0.21",
     "socket.io": "^1.4.8",
     "socket.io-client": "^1.4.8"
   },
